@@ -13,7 +13,7 @@ export default function Navbar() {
             width={70}
             height={70}
             quality={100}
-            placeholder="blur"
+            isBlurred
           />
 
           <h1 className="text-lg font-bold">Shanaka Prince</h1>
