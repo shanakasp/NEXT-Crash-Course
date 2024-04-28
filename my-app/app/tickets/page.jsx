@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import Loading from "../loading";
 import TicketList from "./TicketList";
 
 export default function News() {
@@ -11,7 +13,11 @@ export default function News() {
           </p>
         </div>
       </nav>
-      <TicketList></TicketList>
+
+      <Suspense fallback={<Loading></Loading>}>
+        {" "}
+        <TicketList></TicketList>
+      </Suspense>
     </main>
   );
 }

@@ -1,31 +1,39 @@
-async function getTicket(id) {
-  const res = await fetch("http://localhost:4000/tickets/" + id, {
-    next: {
-      revalidate: 30,
-      //   revalidate: 0,
-    },
-  });
+import { notFound } from "next/navigation"; // Importing notFound from next/navigation
 
-  return res.json();
+async function getTicket(id) {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  try {
+    const res = await fetch(`http://localhost:4000/tickets/${id}`);
+    if (!res.ok) {
+      throw new Error("Ticket not found"); // Handle 404 scenario
+    }
+    return res.json();
+  } catch (error) {
+    throw new Error("Ticket not found");
+  }
 }
 
 export default async function TicketDetails({ params }) {
-  const ticket = await getTicket(params.id);
+  try {
+    const ticket = await getTicket(params.id);
 
-  return (
-    <main>
-      <nav>
-        <h2>Tickets Details</h2>
-      </nav>
+    return (
+      <main>
+        <nav>
+          <h2>Ticket Details</h2>
+        </nav>
 
-      <div className="card">
-        <h3>{ticket.title}</h3>
-        <small>Created by {ticket.user_email}</small>
-        <p>{ticket.body}</p>
-        <div className={`pill ${ticket.priority}`}>
-          {ticket.priority} Priority
+        <div className="card">
+          <h3>{ticket.title}</h3>
+          <small>Created by {ticket.user_email}</small>
+          <p>{ticket.body}</p>
+          <div className={`pill ${ticket.priority}`}>
+            {ticket.priority} Priority
+          </div>
         </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
+  } catch (error) {
+    return notFound();
+  }
 }
